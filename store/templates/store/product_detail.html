@@ -1,0 +1,41 @@
+{% extends 'store/base.html' %}
+{% block content %}
+  <div class="row">
+    <div class="col-md-6">
+      <img src="{{ product.image.url }}" class="img-fluid">
+    </div>
+    <div class="col-md-6">
+      <h2>{{ product.name }}</h2>
+      <p>{{ product.description }}</p>
+      <h4>₹{{ product.price }}</h4>
+      <p>In Stock: {{ product.stock }}</p>
+      <a href="{% url 'add_to_cart' product.id %}" class="btn btn-primary">Add to Cart</a>
+    </div>
+  </div>
+
+  <hr>
+
+  <h4>Customer Reviews</h4>
+  {% for review in reviews %}
+    <div class="border p-2 mb-2">
+      <strong>{{ review.user.username }}</strong>
+      <span> - {{ review.rating }}/5</span>
+      <p>{{ review.comment }}</p>
+    </div>
+  {% empty %}
+    <p>No reviews yet.</p>
+  {% endfor %}
+{% endblock %}
+
+{% if user.is_authenticated %}
+  <hr>
+  <h4>Leave a Review</h4>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button class="btn btn-outline-primary">Submit Review</button>
+  </form>
+{% else %}
+  <p><a href="{% url 'login' %}">Login</a> to write a review.</p>
+{% endif %}
+
